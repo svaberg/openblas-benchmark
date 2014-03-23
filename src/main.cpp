@@ -6,6 +6,7 @@
 #include <cfloat>
 
 #include <armadillo>
+#include <cblas.h>
 
 using namespace std;
 
@@ -91,6 +92,10 @@ result_t time(unsigned size, unsigned iterations)
 int main(int argc, char** argv)
 {
     //openblas_get_number_of_threads();
+
+    //const char *openblas_config = openblas_get_config();
+    //cout << "OpenBLAS config: " << openblas_config;
+
     string file;
     {
         const char *openblas_env_variable = "OPENBLAS_NUM_THREADS";
@@ -109,9 +114,8 @@ int main(int argc, char** argv)
     vector<unsigned> sizes;
     vector<unsigned> iterations;
 
-    cout << "Sizes: ";
     unsigned min_size = 32;
-    unsigned max_size = 512;
+    unsigned max_size = 2048;
     double step = pow(2, 1.0/3.0);
     for (double i_size = min_size; i_size <= max_size; i_size *= step)
     {
@@ -119,10 +123,7 @@ int main(int argc, char** argv)
 
         sizes.push_back(i_size);
         iterations.push_back(iteration);
-
-        cout << i_size << " " ;
     }
-    cout << endl;
 
     vector<result_t> results;
 
