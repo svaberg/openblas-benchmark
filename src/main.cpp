@@ -131,7 +131,7 @@ int main(int argc, char** argv)
         result_t result = time(sizes[i], iterations[i]);
         results.push_back(result);
   
-        cout << "Size:" << setw(6) << result.size << " Average time [ms]: " << result.avg_time << endl; 
+        cout << "Size:" << setw(6) << result.size << " Average time [ms]: " << setw(9) << result.avg_time << endl; 
     }
 
   dump(file, results);
