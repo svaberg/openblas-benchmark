@@ -1,0 +1,11 @@
+set title "Armadillo with OpenBLAS C=AxB"
+set xlabel "Matrix dimension"
+set ylabel "Time [ms]"
+set log x 2
+set log y 2
+set key inside left
+set grid mxtics mytics xtics ytics
+
+plot "results/results_1.data" every ::2 title "1 thread(s)" w yerrorlines, \
+     "results/results_2.data" every ::2 title "2 thread(s)" w yerrorlines
+
