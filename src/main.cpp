@@ -6,7 +6,7 @@
 #include <cfloat>
 
 #include <armadillo>
-#include <cblas.h>
+//#include <cblas.h>
 
 using namespace std;
 
