@@ -6,7 +6,19 @@
 #include <cfloat>
 
 #include <armadillo>
-//#include <cblas.h>
+
+#ifndef MATRIX_SIZE_MIN
+    #define MATRIX_SIZE_MIN 32
+#endif
+#ifndef MATRIX_SIZE_MAX
+    #define MATRIX_SIZE_MAX 1024
+#endif
+#ifndef ITERATIONS
+    #define ITERATIONS 6
+#endif
+#ifndef SUBDIVISIONS
+    #define SUBDIVISIONS 3
+#endif
 
 using namespace std;
 
@@ -16,11 +28,11 @@ struct result_t
     double min_time, avg_time, max_time;
 };
 
-double time_diff(timeval t1, timeval t2)
+double time_diff_ms(timeval t1, timeval t2)
 {
     double t;
-    t = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
-    t += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+    t = (t2.tv_sec - t1.tv_sec) * 1000.0;
+    t += (t2.tv_usec - t1.tv_usec) / 1000.0;
 
     return t;
 }
@@ -73,7 +85,7 @@ result_t time(unsigned size, unsigned iterations)
 	C = A * B;
         gettimeofday(&t1, NULL);
 
-	double time = time_diff(t0, t1);
+	double time = time_diff_ms(t0, t1);
 
         result.avg_time += time / iterations;
         if (time > result.max_time)
@@ -91,11 +103,6 @@ result_t time(unsigned size, unsigned iterations)
 
 int main(int argc, char** argv)
 {
-    //openblas_get_number_of_threads();
-
-    //const char *openblas_config = openblas_get_config();
-    //cout << "OpenBLAS config: " << openblas_config;
-
     string file;
     {
         const char *openblas_env_variable = "OPENBLAS_NUM_THREADS";
@@ -114,15 +121,11 @@ int main(int argc, char** argv)
     vector<unsigned> sizes;
     vector<unsigned> iterations;
 
-    unsigned min_size = 32;
-    unsigned max_size = 2048;
-    double step = pow(2, 1.0/3.0);
-    for (double i_size = min_size; i_size <= max_size; i_size *= step)
+    double step_growth = pow(2, 1.0/(1.0 * SUBDIVISIONS));
+    for (double i_size = MATRIX_SIZE_MIN; i_size <= MATRIX_SIZE_MAX; i_size *= step_growth)
     {
-        unsigned iteration = 6;
-
         sizes.push_back(i_size);
-        iterations.push_back(iteration);
+        iterations.push_back(ITERATIONS);
     }
 
     vector<result_t> results;
@@ -135,6 +138,6 @@ int main(int argc, char** argv)
         cout << "Size:" << setw(6) << result.size << " Average time [ms]: " << setw(9) << result.avg_time << endl; 
     }
 
-  dump(file, results);
+    dump(file, results);
     return 0;
 }
