@@ -5,10 +5,17 @@ set xlabel "Matrix dimension"
 set ylabel "Time [ms]"
 set log x 2
 set log y 2
+set format y "%4.2f"
 set key inside left
 set grid mxtics mytics xtics ytics
 
 filename(n) = sprintf("results/results_%d.data", n)
 title(n) = sprintf("%d thread(s)", n)
+
+plot for [i=1:max_threads] filename(i) every ::2 title title(i) with yerrorlines
+
+set terminal png size 600,400 enhanced  font "Helvetica,10"
+set output 'gnuplot/results.png'
+
 plot for [i=1:max_threads] filename(i) every ::2 title title(i) with yerrorlines
 
